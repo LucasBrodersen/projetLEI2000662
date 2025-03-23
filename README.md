@@ -2,6 +2,8 @@
 
 This project is a web-based platform designed for small and medium-sized businesses to manage subscriptions and recurring payments. The platform aims to automate billing processes, providing businesses like gyms, studios, consultants, and freelancers with an efficient way to handle subscription management, generate invoices, and track payments.
 
+This project is being developed as the final project for the **Computer Engineering Course** at the **University of Aberta (UAB)**. It serves as a practical application of the knowledge acquired during the course, integrating key concepts from web development, payment systems, and software engineering.
+
 ## Features
 
 - **Stripe Integration**: Automates recurring payments and subscription management.
