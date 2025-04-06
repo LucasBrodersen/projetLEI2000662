@@ -1,0 +1,36 @@
+services:
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+    environment:
+      - MAILHOG_SMTP_BIND_ADDR=:1025
+
+  laravel-be-docker:
+    container_name: laravel-be-docker
+    build: .
+    volumes:
+      - ./laravel-app:/var/www/html
+    ports:
+      - 9000:80
+  
+  mysql_db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restAbadaManager
+    ports:
+    - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 9001:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  mysql_data:
