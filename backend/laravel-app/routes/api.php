@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use App\Http\Controllers\Api\V1\CustomWebhookController;
-
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,12 +40,16 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1', 'm
     Route::put('/users/{id}', [UserController::class, 'updateUser']);
     Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
     Route::post('/create-checkout-session', [PaymentController::class, 'createCheckoutSession']);
-    Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
-    Route::get('/payment/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
-    Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
+    Route::post('/subscriptions/{id}/cancel', [PaymentController::class, 'cancelSubscription']);
+    // Route::post('/payment/success', [PaymentController::class, 'paymentSuccess']);
+    // Route::post('/payment/cancel', [PaymentController::class, 'paymentCancel']);
+    // Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
     Route::post('/subscribe-to-plan', [PaymentController::class, 'subscribeToPlan']);
-    
-    
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/users/{id}/invoices', [\App\Http\Controllers\Api\V1\InvoiceController::class, 'getUserInvoices']);
+    Route::apiResource('posts', PostController::class);
+    Route::patch('posts/{post}/toggle-visibility', [PostController::class, 'toggleVisibility']);
+    Route::post('posts/upload-image', [PostController::class, 'uploadCkeditorImage']);
     Route::post('orders/bulk', ['uses' => 'OrderController@bulkStore']);
     
 });

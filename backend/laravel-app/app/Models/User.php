@@ -50,4 +50,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Adicionando o relacionamento active_subscription
+    public function activeSubscription()
+    {
+        return $this->hasOne(\Laravel\Cashier\Subscription::class, 'user_id')
+                    ->where('stripe_status', 'active');
+    }
 }

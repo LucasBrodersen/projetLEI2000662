@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             'postalCode' => $this->postal_code,
             'enrolmentDate' => $this->enrolment_date,
             'status' => $this->status,
+            'activeSubscription' => new SubscriptionResource($this->whenLoaded('activeSubscription')), // Aqui é onde carregamos a assinatura
             //'orders' => OrderResource::collection($this->whenLoaded('orders')) // show orders when required
         ];
     }

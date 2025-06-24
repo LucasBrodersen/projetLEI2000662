@@ -22,8 +22,8 @@ class UserPolicy
     public function view(User $user, User $model): bool
     {
         // Allow 'admin' to view any user
-        // Allow 'partner' to view only their own profile (or set your logic accordingly)
-        return $user->type === 'admin' || ($user->type === 'parceiro' && $user->id === $model->id);
+        // Allow 'cliente' to view only their own profile (or set your logic accordingly)
+        return $user->type === 'admin' || ($user->type === 'cliente' && $user->id === $model->id);
     }
 
     /**
@@ -69,6 +69,28 @@ class UserPolicy
     public function forceDelete(User $user, User $model): bool
     {
         // Allow only 'admin' to permanently delete users
+        return $user->type === 'admin';
+    }
+
+    public function cancelSubscription(User $user, User $model): bool
+    {
+        // Permite se for admin ou o próprio usuário
+        return $user->type === 'admin' || $user->id === $model->id;
+    }
+    public function updateType(User $user, User $model): bool
+    {
+        // Só admin pode alterar o type de qualquer usuário
+        return $user->type === 'admin';
+    }
+
+    public function updateEnrolmentDate(User $user, User $model): bool
+    {
+        // Só admin pode alterar enrolmentDate de qualquer usuário
+        return $user->type === 'admin';
+    }
+        public function updateStatus(User $user, User $model): bool
+    {
+        // Só admin pode alterar enrolmentDate de qualquer usuário
         return $user->type === 'admin';
     }
 }

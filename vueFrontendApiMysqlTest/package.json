@@ -1,0 +1,40 @@
+{
+  "name": "frontendrest",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@editorjs/editorjs": "^2.30.8",
+    "@editorjs/image": "^2.10.2",
+    "@quasar/extras": "^1.16.11",
+    "@stripe/stripe-js": "^5.6.0",
+    "axios": "^1.6.7",
+    "dayjs": "^1.11.13",
+    "path": "^0.12.7",
+    "pinia": "^2.1.7",
+    "quasar": "^2.16.4",
+    "radash": "^12.1.0",
+    "vue": "^3.4.19",
+    "vue-router": "^4.3.0",
+    "vue-toastification": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "@quasar/vite-plugin": "^1.7.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "postcss": "^8.4.38",
+    "sass": "^1.77.4",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4",
+    "vue-tsc": "^1.8.27"
+  }
+}

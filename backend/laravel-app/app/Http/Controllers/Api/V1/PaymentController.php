@@ -12,6 +12,27 @@ use App\Models\User;
 
 class PaymentController extends Controller
 {
+
+public function cancelSubscription($subscriptionId, Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer|exists:users,id',
+    ]);
+    $targetUser = User::findOrFail($request->input('id'));
+
+    dump($subscriptionId);
+    $this->authorize('cancelSubscription', $targetUser);
+
+    $subscription = $targetUser->subscriptions()->where('stripe_id', $subscriptionId)->first();
+
+    if (!$subscription) {
+        return response()->json(['error' => 'Subscription not found'], 404);
+    }
+
+    $subscription->cancel();
+
+    return response()->json(['message' => 'Subscription cancelled successfully.']);
+}
     // public function createCheckoutSession(Request $request)
     // {
     //     Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -67,9 +88,11 @@ class PaymentController extends Controller
     // }
 
 
-        public function createCheckoutSession(Request $request)
+    public function createCheckoutSession(Request $request)
     {
+        info("aqui");
         $user = auth()->user();
+        info($request);
 
         if (!$user->hasStripeId()) {
             $user->createAsStripeCustomer(); // Cria cliente no Stripe se não existir
@@ -77,13 +100,17 @@ class PaymentController extends Controller
 
         $checkoutSession = $user->checkout([
             [
-                'price' => 'price_1Qve2R045jmwTFVdZo8WJy2i', // Substitua pelo ID do preço do Stripe
+                'price' => $request['priceId'], // Substitua pelo ID do preço do Stripe
                 'quantity' => 1,
             ],
         ], [
+            'mode' => 'subscription', // <-- esta linha é ESSENCIAL para preços recorrentes, se um dia adicionar pagamentos unicos preciso alterar isto e ver se o produto é recorrente ou pagamento unico
             'success_url' => 'http://127.0.0.1:5173/welcome-page',
             'cancel_url' => 'http://127.0.0.1:5173/welcome-page',
-            'payment_method_types' => ['card', 'multibanco'], // Adicione os métodos de pagamento desejados
+            'payment_method_types' => ['card'], // Adicione os métodos de pagamento desejados pode-se adicionar multibanco
+            'metadata' => [
+                'product_id' => $request['productId'], // <-- send product_id here
+            ],
         ]);
 
         return response()->json(['id' => $checkoutSession->id]);
@@ -123,6 +150,7 @@ class PaymentController extends Controller
 
     public function subscribeToPlan(Request $request)
     {
+        info("subscribeToPlan");
         $user = auth()->user();
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -130,18 +158,28 @@ class PaymentController extends Controller
         if (!$user->hasStripeId()) {
             $user->createAsStripeCustomer();
         }
+        $priceId = 'price_1Qve3G045jmwTFVdzXPUsCXh';
+        $price = \Stripe\Price::retrieve($priceId);
+        $product = \Stripe\Product::retrieve($price->product);
+        $productName = $product->name;
+        info($productName);
     
         // Crie uma sessão de checkout
         $checkoutSession = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'customer' => $user->stripe_id,
             'line_items' => [[
-                'price' => 'price_1Qve3G045jmwTFVdzXPUsCXh', // Substitua pelo ID do preço do Stripe
+                'price' => $priceId,
                 'quantity' => 1,
             ]],
             'mode' => 'subscription',
             'success_url' => 'http://127.0.0.1:5173/welcome-page',
             'cancel_url' => 'http://127.0.0.1:5173/welcome-page',
+            'subscription_data' => [
+                'metadata' => [
+                    'subscription_name' => $productName,
+                ],
+            ],
         ]);
     
         return response()->json(['id' => $checkoutSession->id]);
